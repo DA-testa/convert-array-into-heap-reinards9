@@ -1,22 +1,30 @@
-def process():
-  # in a nutshell, kods darbojas tā kā tetris
-  threads = [0] * n_threads
-  output = []
-  for job_duration in jobs:
-    # atrod piemērotāko threadu (ar vismazāko apstrādes ilgumu)
-    thread_i = threads.index(min(threads))
-    # saglabājam, kad darbs tiks sākts
-    output.append((thread_i, threads[thread_i]))
-    # pieskaita threadam darba ilgumu
-    threads[thread_i] += job_duration
+def process_jobs():
+    # Allocate jobs to threads like a Tetris game
+    thread_times = [0] * n_threads
+    job_start_times = []
 
-  assert n_jobs == len(output)
+    for job_duration in jobs:
+        # Find the thread with the least amount of work
+        thread_index = thread_times.index(min(thread_times))
 
-  print("\n".join([f"{thread_num} {starts_at}" for thread_num, starts_at in output]))
+        # Record when the job will start
+        job_start_times.append((thread_index, thread_times[thread_index]))
 
-threads_and_jobs = input().split(" ")
-n_threads = int(threads_and_jobs[0])
-n_jobs = int(threads_and_jobs[1])
-jobs = [int(job) for job in input().split(" ")]
+        # Add the job duration to the thread's processing time
+        thread_times[thread_index] += job_duration
 
-process()
+    assert n_jobs == len(job_start_times)
+
+    # Print the thread numbers and job start times
+    for thread_num, starts_at in job_start_times:
+        print(f"Thread {thread_num} starts job at {starts_at} seconds")
+
+# Get input from user
+num_threads, num_jobs = input("Enter number of threads and jobs: ").split()
+n_threads = int(num_threads)
+n_jobs = int(num_jobs)
+jobs = list(map(int, input("Enter job durations: ").split()))
+
+# Process jobs and print output
+process_jobs()
+
